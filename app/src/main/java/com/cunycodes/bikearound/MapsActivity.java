@@ -105,7 +105,6 @@ public class  MapsActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
 
-        //downloadCitiLocationsData();
         mMap.setMyLocationEnabled(true);
 
     }
@@ -130,7 +129,6 @@ public class  MapsActivity extends FragmentActivity implements OnMapReadyCallbac
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         }
     }
-
     public void downloadCitiLocationsData() {
 
         final JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, CITI_API_URL, null, new Response.Listener<JSONObject>() {
@@ -141,30 +139,32 @@ public class  MapsActivity extends FragmentActivity implements OnMapReadyCallbac
                 try {
                     //System.out.println(response.toString());
                     //Log.v("TEST_API_RESPONSE", "ERR: " + response.toString());
+
                     JSONObject data = response.getJSONObject("data");
                     JSONArray list = data.getJSONArray("stations");
+                    int lastUpdate = response.getInt("last_updated");
+                    long currentTimeSecs = 	System.currentTimeMillis() / 1000;
 
-                    //System.out.print("THE LIST = " + list.toString());
+                    int timeElapsedUpdate = (int) (currentTimeSecs - lastUpdate);
 
-//                    JSONObject obj = list.getJSONObject(0);
-//                    String lat = obj.getString("lat");
-//                    System.out.println(lat);
-                    // 40.76727216
+                    Log.d("LASTUPDATE", String.valueOf(lastUpdate));
+                    Log.d("CURRENTTIME", String.valueOf(currentTimeSecs));
+                    Log.d("ELAPSED", String.valueOf(timeElapsedUpdate));
+
 
                     for(int i = 0; i < list.length(); i++) {
                         JSONObject obj = list.getJSONObject(i);
                         double lat = obj.getDouble("lat");
                         double lon = obj.getDouble("lon");
                         String name = obj.getString("name");
-//                        System.out.println(lat);
-//                        System.out.println(lon);
+
 
 
                         LatLng latLng = new LatLng(lat, lon);
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(name));
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(name).snippet(getTimeSinceUpdateString(timeElapsedUpdate)));
 
                     }
-                    
+
 
                 } catch (JSONException e) {
                     Log.v("TEST_API_RESPONSE", "ERR: " );
@@ -182,30 +182,38 @@ public class  MapsActivity extends FragmentActivity implements OnMapReadyCallbac
         Volley.newRequestQueue(this).add(jsonRequest);
     }
 
-    public JSONArray downloadCitiBikeQuantity()
-    {
-        JSONArray JSONStations = null; //declare this, return an array
-        final JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, STATION_STATUS_URL, null, new Response.Listener<JSONObject>() {
+/// fetches station status: number of bikes available, last_updated
+    public void downloadCitiStatusData() {
+
+        final JsonObjectRequest jsonRequestStatus = new JsonObjectRequest(Request.Method.GET, STATION_STATUS_URL, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
 
                 try {
+
                     JSONObject data = response.getJSONObject("data");
                     JSONArray list = data.getJSONArray("stations");
-                    //Log.d("MAPSACTIVITY", list.toString());
-                    //JSONStations = list;
-                   // Log.d("MAPSACTIVITY", JSONStations.toString());
+                    int lastUpdate = response.getInt("last_updated");
+                    Log.d("LASTUPDATE", String.valueOf(lastUpdate));
+
+
+
+                    for(int i = 0; i < list.length(); i++) {
+                        JSONObject obj = list.getJSONObject(i);
+
+                        int stationId =  obj.getInt("station_id");
+                        int numBikes = obj.getInt("num_bikes_available");
+
+                        Log.d("NUMBERBIKES",String.valueOf(stationId) + " : " + String.valueOf(numBikes) );
+
                     }
 
 
-                 catch (JSONException e) {
+                } catch (JSONException e) {
                     Log.v("TEST_API_RESPONSE", "ERR: " );
                 }
-
             }
-
-
 
         }, new Response.ErrorListener() {
 
@@ -215,14 +223,13 @@ public class  MapsActivity extends FragmentActivity implements OnMapReadyCallbac
             }
         });
 
-        Volley.newRequestQueue(this).add(jsonRequest);
-        return JSONStations;
+        Volley.newRequestQueue(this).add(jsonRequestStatus);
     }
 
 
     @Override
     public void onLocationChanged(Location location) {
-
+        Log.d("LOCATION", String.valueOf(location));
     }
 
     @Override
@@ -255,6 +262,25 @@ public class  MapsActivity extends FragmentActivity implements OnMapReadyCallbac
         }
     }
 
+    public  String getTimeSinceUpdateString(int timeElapsedUpdate){
+        String updateTimeString = "";
+        if (timeElapsedUpdate == 0)
+        {
+            updateTimeString = "Updated now";
+
+        }
+        else if (timeElapsedUpdate < 60)
+        {
+            updateTimeString = "Updated less than a minute ago";
+        }
+        else
+        {
+            updateTimeString = "Updated " + String.valueOf((int) timeElapsedUpdate / 60) + "minutes ago";
+        }
+
+        return updateTimeString;
+
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -278,6 +304,7 @@ public class  MapsActivity extends FragmentActivity implements OnMapReadyCallbac
         @Override
         protected Void doInBackground(Void... params) {
             downloadCitiLocationsData();
+            downloadCitiStatusData();
             return null;
         }
     }
