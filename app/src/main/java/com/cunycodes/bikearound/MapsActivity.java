@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -70,6 +71,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 //import com.google.android.gms.identity.intents.Address;
@@ -118,8 +120,12 @@ public class MapsActivity extends AppCompatActivity //FragmentActivity - changed
     final private int bikeTime = metersPerThirtyMin;
     long durationTimeBetweenStationsInSecs;
     private LatLng nearestLocationOnSearch;
+    private LocationRequest mLocationRequest;
+    TextToSpeech tts;
+    int result;
 
     StationInformation stationInformation = new StationInformation(); //Create a new class to hold Station information.
+
 
 
 
@@ -168,6 +174,7 @@ public class MapsActivity extends AppCompatActivity //FragmentActivity - changed
       //  nav_email.setText(user.getEmail());
 
         textAddress = (EditText) findViewById(R.id.textAddress);
+
         btnSearch = (Button) findViewById(R.id.searchBtn);
         startTimer = (Button) findViewById(R.id.startBtn);
         timerView = (TextView) findViewById(R.id.timerView);
@@ -210,7 +217,20 @@ public class MapsActivity extends AppCompatActivity //FragmentActivity - changed
         System.out.println("OnCreate-------laaaaaaaaaaat" + currentLatitude);
         System.out.println("OnCreate-------lnnnnnnnnnnng" + currentLongitude);
 
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status == TextToSpeech.SUCCESS) {
+                    result = tts.setLanguage(Locale.US);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Feature not Supported in your Device", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
     }
+
+
 
 private void showDialog() {
     dialog = new Dialog(this);
@@ -257,12 +277,26 @@ private void showDialog() {
             System.out.println(time);
             timerView.setText(time);
 
-            if(time.equals("05:00")) {
+            if(time.equals("05:01")) {
                 try {
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
                     r.play();
 
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(time.equals("05:00")) {
+                try {
+                    if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA) {
+                        Toast.makeText(getApplicationContext(), "Feature not Supported in your Device", Toast.LENGTH_LONG).show();
+
+                    } else {
+                        tts.speak("You have five minutes left. Please check your device for change of route.", TextToSpeech.QUEUE_FLUSH, null);
+
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -281,9 +315,18 @@ private void showDialog() {
             }
         }
 
+
         @Override
         public void onFinish() {
+        }
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(tts != null) {
+            tts.stop();
+            tts.shutdown();
         }
     }
 
@@ -324,6 +367,7 @@ private void showDialog() {
 
                     System.out.println("Time in minutes: " + timeInMinutes);
                     System.out.println("Time in seconds: " + timeInSeconds);
+
 
 
                 } catch (JSONException e) {
@@ -1027,6 +1071,9 @@ private void showDialog() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
 
+            Toast.makeText(this, "I can't run your location - you denied permission!", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+
         } else {
             startLocationServices();
 
@@ -1048,6 +1095,12 @@ private void showDialog() {
 
     public void startLocationServices() {
         try {
+//            mLocationRequest  = LocationRequest.create().setPriority(LocationRequest.PRIORITY_LOW_POWER);
+//            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//            mLocationRequest.setInterval(5000);
+//
+//            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest,this);
+
             LocationRequest req = LocationRequest.create().setPriority(LocationRequest.PRIORITY_LOW_POWER);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, req, this);
 

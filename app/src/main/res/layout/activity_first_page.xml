@@ -1,60 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_first_page"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cunycodes.bikearound.FirstPageActivity"
-    android:background="@mipmap/bikebackground">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/activity_first_page"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/iwallpaper"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context="com.cunycodes.bikearound.FirstPageActivity">
 
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/bicycle_logo"/>
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp"
+        app:srcCompat="@drawable/title_text"/>
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView5"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="16dp"
+        app:srcCompat="@drawable/motto"/>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:gravity="bottom"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp">
-
-        <Button
-            android:text="@string/login_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnLogin"
-            android:layout_weight="1"
-            android:layout_marginRight="5sp"
-            android:layout_marginEnd="5sp"
-            android:background="@drawable/button_shape" />
-
-        <Button
-            android:text="@string/create_account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnCreateAccount"
-            android:layout_weight=".5"
-            android:layout_marginLeft="5sp"
-            android:layout_marginStart="5sp"
-            android:background="@drawable/button_shape" />
-    </LinearLayout>
-
-    <TextView
-        android:text="@string/app_name"
-        android:layout_width="match_parent"
-        android:layout_height="87dp"
-        android:id="@+id/titleApp"
-        android:textSize="36sp"
-        android:textAlignment="center"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="13dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="40dp"
-        android:textColor="@color/common_google_signin_btn_text_light_pressed" />
+        android:layout_alignParentStart="true">
+
+        <ImageButton
+            android:id="@+id/btnLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/sign_in"
+            android:layout_marginBottom="12dp"/>
+
+
+        <ImageButton
+            android:id="@+id/btnCreateAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/sign_up"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -5,7 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <!-- Screens background -->
-    <color name="bg_screen1">#259dcd</color>
+    <color name="bg_screen1">#a3177d85</color>
     <color name="bg_screen2">#97e6e6</color>
     <color name="bg_screen3">#13e471</color>
 
@@ -15,4 +15,5 @@
 
     <!-- dots inactive colors -->
     <color name="dot_inactive">#cccccc</color>
+    <color name="wallpaper_tint">#0f177d85</color>
 </resources>
