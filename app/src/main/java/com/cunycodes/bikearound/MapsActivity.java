@@ -216,16 +216,7 @@ public class MapsActivity extends AppCompatActivity //FragmentActivity - changed
         System.out.println("OnCreate-------laaaaaaaaaaat" + currentLatitude);
         System.out.println("OnCreate-------lnnnnnnnnnnng" + currentLongitude);
 
-//        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-//            @Override
-//            public void onInit(int status) {
-//                if(status == TextToSpeech.SUCCESS) {
-//                    result = tts.setLanguage(Locale.US);
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "Feature not Supported in your Device", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
+
 
     }
 
@@ -287,20 +278,7 @@ private void showDialog() {
                 }
             }
 
-//            if(time.equals("05:00")) {
-//                try {
-//                    if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA) {
-//                        Toast.makeText(getApplicationContext(), "Feature not Supported in your Device", Toast.LENGTH_LONG).show();
-//
-//                    } else {
-//                        tts.speak("You have five minutes left. Please check your device for change of route.", TextToSpeech.QUEUE_FLUSH, null);
-//
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
+
             //added by mike. If time is Low, at 3:00, show nearest station location on map.
             //LOWTIME is a global variable
             else
